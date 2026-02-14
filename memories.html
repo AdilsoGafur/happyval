@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Memories ❤️</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+    font-family:"Poppins",sans-serif;
+    min-height:100vh;
+    background:#111;
+    color:#fff;
+    overflow-x:hidden;
+    position:relative;
+}
+
+/* Blurred romantic background */
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:url("background/bg.jpg") center/cover no-repeat;
+    filter:blur(12px) brightness(0.4);
+    transform:scale(1.1);
+    z-index:-2;
+}
+
+body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.8));
+    z-index:-1;
+}
+
+header{
+    text-align:center;
+    padding:50px 20px 30px;
+}
+
+header h1{
+    font-family:"Playfair Display",serif;
+    font-size:2.8rem;
+}
+
+header p{
+    opacity:.8;
+    margin-top:10px;
+}
+
+/* Masonry grid */
+.gallery{
+    column-count:4;
+    column-gap:30px;
+    padding:30px;
+}
+
+@media(max-width:1100px){
+    .gallery{column-count:3;}
+}
+@media(max-width:768px){
+    .gallery{column-count:2;}
+}
+@media(max-width:480px){
+    .gallery{column-count:1;}
+}
+
+.card{
+    break-inside:avoid;
+    margin-bottom:30px;
+    position:relative;
+    padding-top:20px;
+    animation:fadeUp .8s ease forwards;
+    opacity:0;
+}
+
+@keyframes fadeUp{
+    from{transform:translateY(20px);opacity:0;}
+    to{transform:translateY(0);opacity:1;}
+}
+
+.pin{
+    width:14px;
+    height:14px;
+    border-radius:50%;
+    position:absolute;
+    top:0;
+    left:50%;
+    transform:translateX(-50%);
+    box-shadow:0 2px 8px rgba(0,0,0,0.4);
+}
+
+.card-inner{
+    border-radius:10px;
+    padding:15px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.5);
+    backdrop-filter:blur(5px);
+    transition:.4s;
+}
+
+.card:hover .card-inner{
+    transform:scale(1.03);
+}
+
+.card img{
+    width:100%;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.card p{
+    margin-top:12px;
+    font-size:.95rem;
+    opacity:.85;
+    text-align:center;
+}
+
+/* Background color styles */
+.black .card-inner{background:#1b1b1b;}
+.white .card-inner{background:#ffffff;color:#333;}
+.yellow .card-inner{background:#fff3b0;color:#333;}
+.pink .card-inner{background:#ffd6e0;color:#333;}
+.blue .card-inner{background:#d6e6ff;color:#333;}
+
+footer{
+    text-align:center;
+    padding:40px 20px;
+    opacity:.7;
+}
+
+.card-inner p{
+    font-size:.95rem;
+    text-align:center;
+    margin-top:12px;
+    letter-spacing:0.5px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>Our Memories ❤️</h1>
+    <p>Every photo holds a moment I’ll never forget.</p>
+</header>
+
+<div class="gallery" id="gallery"></div>
+
+<footer>
+    Made with love 💕
+</footer>
+
+<script>
+const gallery = document.getElementById("gallery");
+const colors = ["black","white","yellow","pink","blue"];
+
+/* 30 Personal Messages */
+const messages = [
+"You walked into my life and everything changed.",
+"That smile still melts me every single time.",
+"Our first laugh together? I’ll never forget it.",
+"You are my calm in every storm.",
+"With you, even silence feels perfect.",
+"This moment reminded me why I chose you.",
+"Every adventure is better with you.",
+"You are my favorite notification.",
+"I still replay this day in my mind.",
+"You made ordinary days magical.",
+"I found home in your arms.",
+"Your happiness is my favorite sight.",
+"We look good together, don’t we?",
+"This was one of my happiest days.",
+"You make my world brighter.",
+"Forever starts with moments like this.",
+"Every second with you matters.",
+"I didn’t know love could feel like this.",
+"You are my best decision.",
+"This memory still gives me butterflies.",
+"Life feels lighter with you.",
+"You are my favorite person.",
+"This day was pure happiness.",
+"I’m grateful for this moment.",
+"Your love changed me for the better.",
+"Even years later, this still feels special.",
+"You are my safe place.",
+"Our story is my favorite story.",
+"This is just one of many beautiful memories.",
+"And this… is only the beginning ❤️"
+];
+
+/* Background Instrumental */
+const bgMusic = new Audio("music/background.mp3");
+bgMusic.loop = true;
+bgMusic.volume = 0.4;
+
+document.body.addEventListener("click", () => {
+    bgMusic.play().catch(()=>{});
+}, { once:true });
+
+let currentAudio = null;
+
+function playSong(src){
+    if(currentAudio){
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+    }
+    bgMusic.pause();
+    currentAudio = new Audio(src);
+    currentAudio.play();
+}
+
+function stopSong(){
+    if(currentAudio){
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        bgMusic.play();
+    }
+}
+
+function typeWriter(element, text, speed=25){
+    element.textContent="";
+    let i=0;
+    function typing(){
+        if(i<text.length){
+            element.textContent+=text.charAt(i);
+            i++;
+            setTimeout(typing,speed);
+        }
+    }
+    typing();
+}
+
+/* Generate Cards */
+for(let i=1;i<=30;i++){
+
+    const card = document.createElement("div");
+    card.className = "card " + colors[i % colors.length];
+
+    const pin = document.createElement("div");
+    pin.className = "pin";
+    pin.style.background = "linear-gradient(to bottom,#ff512f,#dd2476)";
+
+    const inner = document.createElement("div");
+    inner.className = "card-inner";
+
+    const img = document.createElement("img");
+    img.src = "pictures/" + i + ".jpeg";
+    img.dataset.audio = "songs/" + i + ".mp3";
+
+    const message = document.createElement("p");
+    message.style.opacity = "0";
+    message.style.transition = "opacity .4s ease";
+    message.style.minHeight = "50px";
+
+    inner.appendChild(img);
+    inner.appendChild(message);
+    card.appendChild(pin);
+    card.appendChild(inner);
+    gallery.appendChild(card);
+
+    function reveal(){
+        playSong(img.dataset.audio);
+        message.style.opacity = "1";
+        typeWriter(message, messages[i-1]);
+    }
+
+    img.addEventListener("mouseenter", reveal);
+    img.addEventListener("touchstart", reveal);
+
+    img.addEventListener("mouseleave", ()=>{
+        stopSong();
+        message.style.opacity = "0";
+        message.textContent = "";
+    });
+}
+
+/* Floating Hearts Background */
+function createHeart(){
+    const heart = document.createElement("div");
+    heart.innerHTML = "❤️";
+    heart.style.position = "fixed";
+    heart.style.left = Math.random()*100 + "vw";
+    heart.style.bottom = "-20px";
+    heart.style.fontSize = Math.random()*20 + 15 + "px";
+    heart.style.opacity = "0.6";
+    heart.style.animation = "floatUp 6s linear forwards";
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(),6000);
+}
+setInterval(createHeart,1200);
+
+/* Add Heart Animation */
+const style = document.createElement("style");
+style.innerHTML = `
+@keyframes floatUp{
+0%{transform:translateY(0);opacity:0.6}
+100%{transform:translateY(-110vh);opacity:0}
+}`;
+document.head.appendChild(style);
+
+/* Final Forever Card */
+const finalCard = document.createElement("div");
+finalCard.className = "card pink";
+
+const pin2 = document.createElement("div");
+pin2.className = "pin";
+pin2.style.background = "linear-gradient(to bottom,#ff1e56,#ffac41)";
+
+const inner2 = document.createElement("div");
+inner2.className = "card-inner";
+inner2.style.textAlign = "center";
+inner2.style.padding = "50px";
+
+const foreverText = document.createElement("h2");
+foreverText.textContent = "Forever? ❤️";
+foreverText.style.cursor = "pointer";
+foreverText.style.transition = "0.4s";
+
+inner2.appendChild(foreverText);
+finalCard.appendChild(pin2);
+finalCard.appendChild(inner2);
+gallery.appendChild(finalCard);
+
+foreverText.addEventListener("click", ()=>{
+    foreverText.textContent = "Always. 💍";
+    foreverText.style.transform = "scale(1.2)";
+});
+</script>
+
+</body>
+</html>

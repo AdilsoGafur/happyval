@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Valentine’s Day ❤️</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+    font-family:"Poppins",sans-serif;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    color:white;
+    overflow:hidden;
+    position:relative;
+    transition:opacity 0.6s ease;
+}
+
+/* Background */
+body::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:url("background/bg.jpg") center/cover no-repeat;
+    filter:blur(12px) brightness(0.6);
+    transform:scale(1.1);
+    z-index:-2;
+}
+
+body::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.85));
+    z-index:-1;
+}
+
+.container{
+    max-width:600px;
+    padding:40px;
+    animation:fadeIn 1.5s ease;
+}
+
+@keyframes fadeIn{
+    from{opacity:0;transform:translateY(20px)}
+    to{opacity:1;transform:translateY(0)}
+}
+
+h1{
+    font-family:"Playfair Display",serif;
+    font-size:3rem;
+    margin-bottom:20px;
+}
+
+p{
+    font-size:1.1rem;
+    opacity:.9;
+    margin-bottom:30px;
+}
+
+#tease{
+    font-size:0.9rem;
+    opacity:.8;
+    margin-bottom:30px;
+    height:20px;
+}
+
+.buttons{
+    position:relative;
+    height:70px;
+}
+
+button{
+    padding:14px 35px;
+    font-size:1rem;
+    border:none;
+    border-radius:30px;
+    cursor:pointer;
+    position:absolute;
+    transition:.3s;
+}
+
+#yes{
+    background:#ff4d6d;
+    color:white;
+    left:25%;
+}
+
+#yes:hover{
+    background:#e63e5c;
+    transform:scale(1.05);
+}
+
+#no{
+    background:white;
+    color:#333;
+    left:55%;
+}
+
+/* Floating hearts */
+.heart{
+    position:absolute;
+    color:#ff4d6d;
+    font-size:20px;
+    animation:floatUp 1.2s ease forwards;
+}
+
+@keyframes floatUp{
+    0%{opacity:1;transform:translateY(0) scale(1)}
+    100%{opacity:0;transform:translateY(-60px) scale(1.8)}
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Happy Valentine’s Day ❤️</h1>
+    <p>
+        I made something special for you.
+        Do you want to see it?
+    </p>
+
+    <div id="tease"></div>
+
+    <div class="buttons">
+        <button id="yes">Yes 💕</button>
+        <button id="no">No 🙈</button>
+    </div>
+</div>
+
+<audio id="bgMusic" src="music/intro.mp3" loop></audio>
+
+<script>
+
+const noBtn = document.getElementById("no");
+const yesBtn = document.getElementById("yes");
+const tease = document.getElementById("tease");
+const music = document.getElementById("bgMusic");
+
+let attempts = 0;
+
+/* Start music on first interaction */
+document.body.addEventListener("click", () => {
+    music.play().catch(()=>{});
+}, { once:true });
+
+/* YES → fade and redirect */
+yesBtn.addEventListener("click", () => {
+    document.body.style.opacity = "0";
+    setTimeout(()=>{
+        window.location.href="memories.html";
+    },600);
+});
+
+/* Move NO button */
+function moveButton() {
+    attempts++;
+
+    const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+    const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+
+    createHeart(x,y);
+
+    if(attempts === 3){
+        tease.textContent = "Are you sure about that? 😏";
+    }
+    if(attempts === 6){
+        tease.textContent = "You can’t escape this love.";
+    }
+    if(attempts === 10){
+        tease.textContent = "Just press Yes already 💕";
+    }
+}
+
+noBtn.addEventListener("mouseover", moveButton);
+noBtn.addEventListener("touchstart", moveButton);
+
+/* Heart animation */
+function createHeart(x,y){
+    const heart = document.createElement("div");
+    heart.className="heart";
+    heart.innerHTML="❤️";
+    heart.style.left = x + "px";
+    heart.style.top = y + "px";
+    document.body.appendChild(heart);
+
+    setTimeout(()=>heart.remove(),1200);
+}
+
+</script>
+
+</body>
+</html>
